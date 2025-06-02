@@ -17,14 +17,13 @@ export default function LoginForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
-        credentials: "include", // ¡Importante para enviar cookies!
+        credentials: "include",
       });
 
       if (!res.ok) throw new Error("Credenciales incorrectas");
 
       const { token } = await res.json();
       
-      // Guardar token en cookie y redirigir
       document.cookie = `authToken=${token}; path=/; SameSite=Lax`;
       window.location.href = "/bienvenido";
     } catch (err) {
