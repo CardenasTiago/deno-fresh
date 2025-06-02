@@ -15,7 +15,7 @@ export default function RegisterFormIsland() {
             method: "POST",
             headers: {
             "Content-Type": "application/json",
-            "Accept": "application/json"  // Añade este header
+            "Accept": "application/json" 
             },
             body: JSON.stringify({
             name: formData.get("name"),
@@ -25,7 +25,7 @@ export default function RegisterFormIsland() {
             username: formData.get("username"),
             password: formData.get("password")
             }),
-            credentials: "include"  // Importante para cookies
+            credentials: "include" 
         });
     
         if (!res.ok) throw new Error(await res.text());
