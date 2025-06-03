@@ -1,13 +1,13 @@
-import { Pool } from "postgres/mod.ts";
+import { Client } from "postgres/mod.ts";
 
-const POOL_CONNECTIONS = 3;
-
-const dbPool = new Pool({
+const client = new Client({
   user: "postgres",
   password: "password",
   database: "studentapp",
   hostname: "localhost",
   port: 5432,
-}, POOL_CONNECTIONS, true);
+});
 
-export default dbPool;
+await client.connect();
+
+export default client;
