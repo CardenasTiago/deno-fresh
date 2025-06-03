@@ -11,7 +11,7 @@ export default function RegisterFormIsland() {
         const formData = new FormData(e.currentTarget);
     
         try {
-        const res = await fetch("http://localhost:8080/users", {
+        const res = await fetch("api/register", {
             method: "POST",
             headers: {
             "Content-Type": "application/json",
@@ -19,11 +19,11 @@ export default function RegisterFormIsland() {
             },
             body: JSON.stringify({
             name: formData.get("name"),
-            lastName: formData.get("lastName"),
+            lastname: formData.get("lastname"),
             age: parseInt(formData.get("age")?.toString() || "0"),
             email: formData.get("email"),
+            password: formData.get("password"),
             username: formData.get("username"),
-            password: formData.get("password")
             }),
             credentials: "include" 
         });

@@ -1,8 +1,6 @@
-import dbPool from "../../lib/config/database.ts";
+import client from "../../lib/config/database.ts";
+import {hash} from "bcrypt";
 
-import * as bcrypy from bcrypy;
-import { lastPathSegment } from "$std/path/_common/basename.ts";
-import { db } from "$std/media_types/_db.ts";
 
 export const handler = async(req: Request): Promise<Response> =>{
     const body = await req.json();
@@ -12,10 +10,29 @@ export const handler = async(req: Request): Promise<Response> =>{
         return new Response(JSON.stringify({ error: "Faltan datos obligatorios" }), { status: 400 });
     }
 
-    const userExist = await dbPool.queryObject`
-    SELECT * FROM users WHERE email = ${email} OR username = ${username}
+    const userEmail = await client.queryObject`
+    SELECT * FROM app_user WHERE email = ${email}
   `;
 
+    if(userEmail.rows.length > 0){
+        return new Response(JSON.stringify({error: "Usuario con ese email ya existe"}),{ status: 400})
+    }
+
+    const userName = await client.queryObject`
+    SELECT * FROM app_user WHERE username = ${username}
+    `;
+
+    if(userName.rows.length > 0){
+        return new Response(JSON.stringify({error: "Usuario con ese username ya existe"}), {status: 400});
+    }
+
+    const hashedPassword = await hash(password);
+
+
+    await client.queryObject`
+    INSERT INTO app_user (name, lastname, age, email, password, username)
+    VALUES (${name}, ${lastname}, ${age}, ${email}, ${hashedPassword}, ${username})
+    `;
 
     return new Response(JSON.stringify({ message: "Usuario registrado exitosamente" }), { status: 201 });
 }

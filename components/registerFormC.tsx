@@ -23,11 +23,11 @@ export default function RegisterForm({ error, onSubmit }: RegisterFormProps) {
           />
         </div>
         <div>
-          <label for="lastName" class="block mb-2">Apellido:</label>
+          <label for="lastname" class="block mb-2">Apellido:</label>
           <input
             type="text"
-            id="lastName"
-            name="lastName"
+            id="lastname"
+            name="lastname"
             class="w-full px-3 py-2 border rounded-md"
             required
           />
