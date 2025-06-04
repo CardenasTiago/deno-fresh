@@ -18,12 +18,8 @@ export default function RegisterFormIsland() {
             "Accept": "application/json" 
             },
             body: JSON.stringify({
-            name: formData.get("name"),
-            lastname: formData.get("lastname"),
-            age: parseInt(formData.get("age")?.toString() || "0"),
-            email: formData.get("email"),
-            password: formData.get("password"),
             username: formData.get("username"),
+            password: formData.get("password"),
             }),
             credentials: "include" 
         });

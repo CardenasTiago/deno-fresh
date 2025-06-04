@@ -14,7 +14,7 @@ export const handler = async(req: Request): Promise<Response> =>{
     }
 
     const usernameExist = await client.queryObject`
-    SELECT * FROM app_user WHERE username = ${username}
+    SELECT * FROM admin WHERE username = ${username}
     `;
 
     const user = usernameExist.rows[0]
@@ -31,9 +31,7 @@ export const handler = async(req: Request): Promise<Response> =>{
     message: "Login exitoso",
     user: {
       id: user.id.toString(),
-      name: user.name,
       username: user.username,
-      email: user.email,
     },
   }), { status: 200 });
 };
