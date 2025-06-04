@@ -12,8 +12,8 @@ import * as $login from "./routes/login.tsx";
 import * as $menu from "./routes/menu.tsx";
 import * as $register from "./routes/register.tsx";
 import * as $loginForm from "./islands/loginForm.tsx";
+import * as $menu_1 from "./islands/menu.tsx";
 import * as $registerForm from "./islands/registerForm.tsx";
-import * as $studentMenu from "./islands/studentMenu.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -30,8 +30,8 @@ const manifest = {
   },
   islands: {
     "./islands/loginForm.tsx": $loginForm,
+    "./islands/menu.tsx": $menu_1,
     "./islands/registerForm.tsx": $registerForm,
-    "./islands/studentMenu.tsx": $studentMenu,
   },
   baseUrl: import.meta.url,
 } satisfies Manifest;

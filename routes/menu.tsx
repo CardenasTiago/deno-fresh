@@ -1,5 +1,5 @@
 // routes/dashboard.tsx
-import Dashboard from "../islands/studentMenu.tsx";
+import Dashboard from "../islands/menu.tsx";
 
 export default function DashboardPage() {
   return (

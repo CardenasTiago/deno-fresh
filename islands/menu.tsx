@@ -1,5 +1,7 @@
 // islands/Dashboard.tsx
 import { useState } from "preact/hooks";
+import StudentForm from "../components/studentForm.tsx";
+import { JSX } from "preact/jsx-runtime";
 
 export default function Dashboard() {
   const [section, setSection] = useState("estudiante");
@@ -42,17 +44,7 @@ export default function Dashboard() {
         {section === "estudiante" && (
           <section>
             <h3 class="text-2xl font-semibold mb-4">Agregar Estudiante</h3>
-            <form class="space-y-4 max-w-xl">
-              <div class="grid grid-cols-2 gap-4">
-                <input type="text" placeholder="Nombre" class="p-2 border rounded" />
-                <input type="text" placeholder="Apellido" class="p-2 border rounded" />
-              </div>
-              <input type="number" placeholder="Edad" class="w-full p-2 border rounded" />
-              <input type="email" placeholder="Email" class="w-full p-2 border rounded" />
-              <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                Guardar Estudiante
-              </button>
-            </form>
+                <StudentForm onSubmit={handleStudentSubmit} />
           </section>
         )}
 
@@ -90,3 +82,32 @@ export default function Dashboard() {
     </div>
   );
 }
+
+async function handleStudentSubmit(e: JSX.TargetedEvent<HTMLFormElement>) {
+  e.preventDefault();
+  const form = new FormData(e.currentTarget);
+  const data = {
+    name: form.get("name"),
+    lastName: form.get("lastname"),
+    email: form.get("email"),
+    age: form.get("age"),
+    legajo: form.get("legajo")
+  };
+  console.log(data.name)
+
+  const res = await fetch("http://localhost:8080/students", {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (res.ok) {
+    alert("Estudiante guardado");
+    e.currentTarget.reset();
+  } else {
+    alert("Error al guardar estudiante");
+  }
+}
+
+
+

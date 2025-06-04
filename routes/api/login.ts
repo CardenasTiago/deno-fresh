@@ -1,4 +1,3 @@
-
 import client from "../../lib/config/database.ts";
 import {compare} from "bcrypt";
 
