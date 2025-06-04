@@ -13,7 +13,7 @@ export default function LoginForm() {
     const password = formData.get("password")?.toString();
 
     try {
-      const res = await fetch("http://localhost:8080/users/login", {
+      const res = await fetch("api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -25,9 +25,13 @@ export default function LoginForm() {
       const { token } = await res.json();
       
       document.cookie = `authToken=${token}; path=/; SameSite=Lax`;
-      window.location.href = "/bienvenido";
+      window.location.href = "/menu";
     } catch (err) {
-      setError(err.message);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Ocurrió un error inesperado");
+      }
     }
   };
 
