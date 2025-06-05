@@ -2,9 +2,16 @@
 import { useState } from "preact/hooks";
 import StudentForm from "../components/studentForm.tsx";
 import { JSX } from "preact/jsx-runtime";
+import CarrerForm from "../components/carrerForm.tsx";
+import { useEffect } from "preact/hooks";
+import { signal } from "@preact/signals";
+
 
 export default function Dashboard() {
   const [section, setSection] = useState("estudiante");
+  const estudiantes = signal([]);
+  const carreras = signal([]);
+
 
   return (
     <div class="flex min-h-screen bg-gray-100">
@@ -51,12 +58,7 @@ export default function Dashboard() {
         {section === "carrera" && (
           <section>
             <h3 class="text-2xl font-semibold mb-4">Agregar Carrera</h3>
-            <form class="space-y-4 max-w-md">
-              <input type="text" placeholder="Nombre de la carrera" class="w-full p-2 border rounded" />
-              <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-                Guardar Carrera
-              </button>
-            </form>
+            <CarrerForm onSubmit={handleCarrerSubmit}/>
           </section>
         )}
 
@@ -81,6 +83,7 @@ export default function Dashboard() {
       </main>
     </div>
   );
+
 }
 
 async function handleStudentSubmit(e: JSX.TargetedEvent<HTMLFormElement>) {
@@ -93,7 +96,6 @@ async function handleStudentSubmit(e: JSX.TargetedEvent<HTMLFormElement>) {
     age: form.get("age"),
     legajo: form.get("legajo")
   };
-  console.log(data.name)
 
   const res = await fetch("http://localhost:8080/students", {
     method: "POST",
@@ -109,5 +111,24 @@ async function handleStudentSubmit(e: JSX.TargetedEvent<HTMLFormElement>) {
   }
 }
 
+async function handleCarrerSubmit(e: JSX.TargetedEvent<HTMLFormElement>){
+  e.preventDefault();
+  const form = new FormData(e.currentTarget);
+  const data = {
+    name: form.get("name"),
+  };
 
+  const res = await fetch("http://localhost:8080/carrers",{
+    method: "POST",
+    body: JSON.stringify(data),
+    headers:{"Content-Type": "application/json"},
+  });
+
+  if (res.ok){
+    alert("Carrera guardada");
+    e.currentTarget.reset();
+  }else{
+    alert("Error al guardar la carera");
+  }
+}
 
