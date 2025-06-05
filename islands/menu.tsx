@@ -5,14 +5,66 @@ import { JSX } from "preact/jsx-runtime";
 import CarrerForm from "../components/carrerForm.tsx";
 import { useEffect } from "preact/hooks";
 import { signal } from "@preact/signals";
+import AssignForm from "../components/asignForm.tsx";
 
+// Declara los signals fuera del componente
+const estudiantes = signal([]);
+const carreras = signal([]);
 
-export default function Dashboard() {
+export default function Menu() {
   const [section, setSection] = useState("estudiante");
-  const estudiantes = signal([]);
-  const carreras = signal([]);
+  
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const resEstudiantes = await fetch("http://localhost:8080/students");
+        const resCarreras = await fetch("http://localhost:8080/carrers");
+  
+        console.log("res estudiantes", resEstudiantes);
+        console.log("res carreras", resCarreras);
 
+        if (!resEstudiantes.ok || !resCarreras.ok) {
+          throw new Error("Error al cargar datos");
+        }
+  
+        const dataEstudiantes = await resEstudiantes.json();
+        const dataCarreras = await resCarreras.json();
+        console.log("datos estudiantes", dataEstudiantes);
+        console.log("datos carreras", dataCarreras);
 
+        estudiantes.value = dataEstudiantes;
+        carreras.value = dataCarreras;
+        //debug
+        console.log("datos estudiantes", estudiantes.value);
+        console.log("datos carreras", carreras.value);
+      } catch (error) {
+        console.error("Error al cargar estudiantes o carreras:", error);
+      }
+    }
+  
+    fetchData();
+  }, []);
+
+  // Función para refrescar los datos
+  const refreshData = async () => {
+    try {
+      const resEstudiantes = await fetch("http://localhost:8080/students");
+      const resCarreras = await fetch("http://localhost:8080/carrers");
+
+      if (resEstudiantes.ok) {
+        const dataEstudiantes = await resEstudiantes.json();
+        estudiantes.value = dataEstudiantes;
+      }
+
+      if (resCarreras.ok) {
+        const dataCarreras = await resCarreras.json();
+        carreras.value = dataCarreras;
+      }
+    } catch (error) {
+      console.error("Error al actualizar datos:", error);
+    }
+  };
+  
   return (
     <div class="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
@@ -51,42 +103,33 @@ export default function Dashboard() {
         {section === "estudiante" && (
           <section>
             <h3 class="text-2xl font-semibold mb-4">Agregar Estudiante</h3>
-                <StudentForm onSubmit={handleStudentSubmit} />
+            <StudentForm onSubmit={(e) => handleStudentSubmit(e, refreshData)} />
           </section>
         )}
 
         {section === "carrera" && (
           <section>
             <h3 class="text-2xl font-semibold mb-4">Agregar Carrera</h3>
-            <CarrerForm onSubmit={handleCarrerSubmit}/>
+            <CarrerForm onSubmit={(e) => handleCarrerSubmit(e, refreshData)}/>
           </section>
         )}
 
         {section === "asignar" && (
           <section>
             <h3 class="text-2xl font-semibold mb-4">Asignar Carrera a Estudiante</h3>
-            <form class="space-y-4 max-w-md">
-              <select class="w-full p-2 border rounded">
-                <option disabled selected>Selecciona un estudiante</option>
-                {/* Opciones dinámicas en el futuro */}
-              </select>
-              <select class="w-full p-2 border rounded">
-                <option disabled selected>Selecciona una carrera</option>
-                {/* Opciones dinámicas en el futuro */}
-              </select>
-              <button class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">
-                Asignar
-              </button>
-            </form>
+            <AssignForm
+              estudiantes={estudiantes}
+              carreras={carreras}
+              onSubmit={handleAssignSubmit}
+            />
           </section>
         )}
       </main>
     </div>
   );
-
 }
 
-async function handleStudentSubmit(e: JSX.TargetedEvent<HTMLFormElement>) {
+async function handleStudentSubmit(e: JSX.TargetedEvent<HTMLFormElement>, refreshData?: () => Promise<void>) {
   e.preventDefault();
   const form = new FormData(e.currentTarget);
   const data = {
@@ -106,29 +149,54 @@ async function handleStudentSubmit(e: JSX.TargetedEvent<HTMLFormElement>) {
   if (res.ok) {
     alert("Estudiante guardado");
     e.currentTarget.reset();
+    // Actualizar los datos después de agregar
+    if (refreshData) await refreshData();
   } else {
     alert("Error al guardar estudiante");
   }
 }
 
-async function handleCarrerSubmit(e: JSX.TargetedEvent<HTMLFormElement>){
+async function handleCarrerSubmit(e: JSX.TargetedEvent<HTMLFormElement>, refreshData?: () => Promise<void>) {
   e.preventDefault();
   const form = new FormData(e.currentTarget);
   const data = {
     name: form.get("name"),
   };
 
-  const res = await fetch("http://localhost:8080/carrers",{
+  const res = await fetch("http://localhost:8080/carrers", {
     method: "POST",
     body: JSON.stringify(data),
-    headers:{"Content-Type": "application/json"},
+    headers: {"Content-Type": "application/json"},
   });
 
-  if (res.ok){
+  if (res.ok) {
     alert("Carrera guardada");
     e.currentTarget.reset();
-  }else{
-    alert("Error al guardar la carera");
+    // Actualizar los datos después de agregar
+    if (refreshData) await refreshData();
+  } else {
+    alert("Error al guardar la carrera");
   }
 }
 
+async function handleAssignSubmit(e: JSX.TargetedEvent<HTMLFormElement>) {
+  e.preventDefault();
+  const form = new FormData(e.currentTarget);
+  const data = {
+    studentId: form.get("student_id"),
+    carrerId: form.get("carrer_id")
+  };
+
+  const res = await fetch("http://localhost:8080/students/enroll", {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {"Content-Type": "application/json"},
+  });
+
+  if (res.ok) {
+    alert("Carrera asignada correctamente");
+    e.currentTarget.reset();
+  } else {
+    alert("Error al asignar la carrera");
+  }
+}
