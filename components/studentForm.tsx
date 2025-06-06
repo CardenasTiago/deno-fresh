@@ -1,4 +1,3 @@
-// components/StudentForm.tsx
 import { JSX } from "preact";
 
 interface StudentFormProps {

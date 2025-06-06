@@ -1,5 +1,4 @@
 // asignForm.tsx
-import { h } from "preact";
 import { JSX } from "preact/jsx-runtime";
 import { Signal } from "@preact/signals";
 
@@ -25,11 +24,6 @@ interface AssignFormProps {
 }
 
 export default function AssignForm({ estudiantes, carreras, onSubmit }: AssignFormProps) {
-  // Accede directamente a los valores de los signals en el JSX
-  // para que se mantenga la reactividad
-  console.log("Estudiantes:", estudiantes.value);
-  console.log("Carreras:", carreras.value);
-
   return (
     <section>
       <form class="space-y-4 max-w-md" onSubmit={onSubmit}>

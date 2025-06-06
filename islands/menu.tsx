@@ -29,14 +29,9 @@ export default function Menu() {
   
         const dataEstudiantes = await resEstudiantes.json();
         const dataCarreras = await resCarreras.json();
-        console.log("datos estudiantes", dataEstudiantes);
-        console.log("datos carreras", dataCarreras);
 
         estudiantes.value = dataEstudiantes;
         carreras.value = dataCarreras;
-        //debug
-        console.log("datos estudiantes", estudiantes.value);
-        console.log("datos carreras", carreras.value);
       } catch (error) {
         console.error("Error al cargar estudiantes o carreras:", error);
       }
@@ -45,7 +40,6 @@ export default function Menu() {
     fetchData();
   }, []);
 
-  // Función para refrescar los datos
   const refreshData = async () => {
     try {
       const resEstudiantes = await fetch("http://localhost:8080/students");
@@ -67,7 +61,6 @@ export default function Menu() {
   
   return (
     <div class="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
       <aside class="w-64 bg-white p-6 border-r shadow-md">
         <h2 class="text-2xl font-bold mb-6 text-center">Panel</h2>
         <nav class="space-y-4">

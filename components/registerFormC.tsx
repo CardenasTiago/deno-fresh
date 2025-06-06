@@ -1,4 +1,3 @@
-// components/RegisterForm.tsx
 import { JSX } from "preact";
 
 interface RegisterFormProps {

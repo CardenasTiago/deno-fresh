@@ -8,7 +8,7 @@ interface AuthFormProps {
 
 export default function AuthForm({ error, onSubmit }: AuthFormProps) {
   return (
-    <form onSubmit={onSubmit} class="space-y-4"> {/* ¡Ahora es un <form>! */}
+    <form onSubmit={onSubmit} class="space-y-4">
       {error && <p class="text-red-500">{error}</p>}
       <div>
         <label for="username" class="block mb-2">Usuario:</label>
