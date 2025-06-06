@@ -91,7 +91,12 @@ export default function Menu() {
             class={`w-full text-left px-4 py-2 rounded-md ${
               section === "asignar" ? "bg-blue-500 text-white" : "hover:bg-gray-200"
             }`}
-            onClick={() => setSection("asignar")}
+            onClick={async() =>{
+              setSection("asignar");
+              await refreshData();
+            }
+
+            }
           >
             🔗 Asignar Carrera
           </button>
@@ -120,7 +125,7 @@ export default function Menu() {
             <AssignForm
               estudiantes={estudiantes}
               carreras={carreras}
-              onSubmit={handleAssignSubmit}
+              onSubmit={(e) => handleAssignSubmit(e, refreshData)}
             />
           </section>
         )}
@@ -149,7 +154,6 @@ async function handleStudentSubmit(e: JSX.TargetedEvent<HTMLFormElement>, refres
   if (res.ok) {
     alert("Estudiante guardado");
     e.currentTarget.reset();
-    // Actualizar los datos después de agregar
     if (refreshData) await refreshData();
   } else {
     alert("Error al guardar estudiante");
@@ -179,7 +183,7 @@ async function handleCarrerSubmit(e: JSX.TargetedEvent<HTMLFormElement>, refresh
   }
 }
 
-async function handleAssignSubmit(e: JSX.TargetedEvent<HTMLFormElement>) {
+async function handleAssignSubmit(e: JSX.TargetedEvent<HTMLFormElement>, refreshData?:()=> Promise<void>) {
   e.preventDefault();
   const form = new FormData(e.currentTarget);
   const data = {
@@ -196,6 +200,7 @@ async function handleAssignSubmit(e: JSX.TargetedEvent<HTMLFormElement>) {
   if (res.ok) {
     alert("Carrera asignada correctamente");
     e.currentTarget.reset();
+    if (refreshData) await refreshData();
   } else {
     alert("Error al asignar la carrera");
   }
