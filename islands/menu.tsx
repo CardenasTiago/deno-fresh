@@ -7,7 +7,6 @@ import { useEffect } from "preact/hooks";
 import { signal } from "@preact/signals";
 import AssignForm from "../components/asignForm.tsx";
 
-// Declara los signals fuera del componente
 const estudiantes = signal([]);
 const carreras = signal([]);
 
@@ -169,7 +168,6 @@ async function handleCarrerSubmit(e: JSX.TargetedEvent<HTMLFormElement>, refresh
   if (res.ok) {
     alert("Carrera guardada");
     e.currentTarget.reset();
-    // Actualizar los datos después de agregar
     if (refreshData) await refreshData();
   } else {
     alert("Error al guardar la carrera");

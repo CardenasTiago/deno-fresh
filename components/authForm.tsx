@@ -23,7 +23,7 @@ export default function AuthForm({ error, onSubmit }: AuthFormProps) {
       <div>
         <label for="password" class="block mb-2">Contraseña:</label>
         <input
-          type="text"
+          type="password"
           id="password"
           name="password"
           class="w-full px-3 py-2 border rounded-md"
